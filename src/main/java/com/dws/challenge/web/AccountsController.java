@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 import javax.validation.Valid;
 
 @RestController
@@ -57,7 +60,16 @@ public class AccountsController {
     log.info("Transfer Money {}", transferMoney);
 
     try {
-    this.accountsService.transferMoney(transferMoney);
+        // Asynchronous execution
+        Executor executor = Executors.newFixedThreadPool(10);
+        long start = System.currentTimeMillis();
+
+        executor.execute(()->this.accountsService.transferMoney(transferMoney));
+        
+        long end = System.currentTimeMillis();
+        System.out.printf("The Amount transfer took %s ms%n", end - start);
+
+   
     } catch (Exception daie) {
       return new ResponseEntity<>(daie.getMessage(), HttpStatus.BAD_REQUEST);
     }
