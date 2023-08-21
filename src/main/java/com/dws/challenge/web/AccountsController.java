@@ -55,26 +55,5 @@ public class AccountsController {
 
   
 
-  @PostMapping(path = "/transeferMoney",consumes = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> transferMoney(@RequestBody @Valid TransferMoney transferMoney) {
-    log.info("Transfer Money {}", transferMoney);
-
-    try {
-        // Asynchronous execution
-        Executor executor = Executors.newFixedThreadPool(10);
-        long start = System.currentTimeMillis();
-
-        executor.execute(()->this.accountsService.transferMoney(transferMoney));
-        
-        long end = System.currentTimeMillis();
-        System.out.printf("The Amount transfer took %s ms%n", end - start);
-
-   
-    } catch (Exception daie) {
-      return new ResponseEntity<>(daie.getMessage(), HttpStatus.BAD_REQUEST);
-    }
-
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
 
 }
